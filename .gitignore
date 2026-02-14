@@ -39,3 +39,7 @@ __pycache__/
 *.pyc
 *.egg-info/
 dist/
+
+# Personal notes
+STUDY_GUIDE.md
+../STUDY_GUIDE.md
