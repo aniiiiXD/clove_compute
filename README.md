@@ -1,6 +1,12 @@
 # Clove Compute
 
+[![Build](https://github.com/clove-os/clove-compute/actions/workflows/ci.yml/badge.svg)](https://github.com/clove-os/clove-compute/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CUDA](https://img.shields.io/badge/CUDA-12.0+-green.svg)](https://developer.nvidia.com/cuda-toolkit)
+
 High-performance CUDA inference runtime for transformer models. Part of the [CloveOS](https://cloveos.com) ecosystem.
+
+> **Note**: This project is under active development. APIs may change between versions.
 
 ## Features
 
@@ -181,10 +187,33 @@ ncu --export profile.ncu-rep ./build/bench_gemm
 | A100 | 8.0 | Should work |
 | H100 | 9.0 | Planned |
 
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes and ensure tests pass
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+Please ensure your code:
+- Compiles without warnings
+- Passes all existing tests
+- Includes tests for new functionality
+- Follows the existing code style
+
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) for details.
 
-## Author
+## Acknowledgments
 
-Built as part of the CloveOS project.
+- NVIDIA for CUDA and cuBLAS
+- The Flash Attention paper authors for the algorithm
+- The CloveOS community
+
+---
+
+Built with care as part of the [CloveOS](https://cloveos.com) project.

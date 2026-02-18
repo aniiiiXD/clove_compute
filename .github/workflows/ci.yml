@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: nvidia/cuda:12.2.0-devel-ubuntu22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y cmake build-essential
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+
+      - name: Build
+        run: cmake --build build --config ${{ env.BUILD_TYPE }} -j$(nproc)
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            build/test_gemm
+            build/bench_gemm
+          retention-days: 7
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+
+      - name: Check formatting
+        run: |
+          find src include -name '*.cu' -o -name '*.cuh' -o -name '*.cpp' -o -name '*.h' | \
+            xargs clang-format --dry-run --Werror || echo "Formatting issues found"
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: nvidia/cuda:12.2.0-runtime-ubuntu22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build
+
+      - name: Make executables runnable
+        run: chmod +x build/*
+
+      - name: Run tests
+        run: |
+          if command -v nvidia-smi &> /dev/null; then
+            ./build/test_gemm
+          else
+            echo "No GPU available, skipping GPU tests"
+          fi
